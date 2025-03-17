@@ -29,7 +29,7 @@ networkx
 numpy
 scipy
 ```
-.
+
 Before starting the project, you need to configure the parameter file. For detailed instructions, refer to **data/parameter_cfg.config**.
 
 
@@ -79,7 +79,6 @@ python3 gen_bubbles.py [-config CONFIG_FILE] [-cnv CNV_CSV_FILE] [-o OUTPUT_NPZ_
 commands:
 -config [str]: Path to the configuration file.
 -cnv [str]: Path to the CNV list in CSV format. 
-
 -o [str]: Path to the output .npz file (default: bub_results.npz).
 ```
 The CSV list file  should be converted from the VCF file of CNV samples in the training dataset. See [example/cnv_list.csv] for details. The CSV should include the following columns: 
