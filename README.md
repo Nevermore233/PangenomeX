@@ -88,7 +88,21 @@ Example:
 ```bash
 python3 gen_bubbles.py -config data/parameter.config -cnv data/cnv_list.csv -o data/bub_results.npz
 ```
+Then, use tree2graph.py to convert the .nwk file to a .gpickle file.
 
+**Usage**
+```bash
+python3 gen_bubbles.py [-config CONFIG_FILE] [-cnv CNV_CSV_FILE] [-o OUTPUT_NPZ_FILE]
+
+commands:
+-nwk [str]: Path to the configuration file.
+-cnv [str]: Path to the CNV list in CSV format. 
+-o [str]: Path to the output .npz file (default: bub_results.npz).
+```
+Example:
+```bash
+python3 tree2graph.py -nwk mynwk.nwk -npz data/bub_results.npz -cnv /data/home/std_13/000_pgcnv/data/zipcall-output/zipcaller_res_2025-04-01_16-25-47.cnv -o graph.gpickle
+```
 
 
 
