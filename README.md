@@ -1,7 +1,7 @@
 # PGcnv: Pangenome-based Incremental Learning Framework for Shallow Copy Number Variation Detection
 
 ## Abstract
-Shallow whole-genome sequencing (sWGS) for inferring copy number variations (CNVs) in the human genome has rapidly become a routine practice at many research centers. Although several tools are available for inferring CNVs from sWGS data, the precision of these methods is often limited due to noise from low coverage and the impact of copy number polymorphisms (CNPs), which makes them insufficient for large-scale variant detection in clinical practice. In this study, we developed PGcnv, a tool that includes a CNV caller (ZIP-Caller) based on a zero-inflated Poisson distribution and a corrector based on a pangenome graph with bubbles. First, we develop a detection method specifically designed to account for the depth distribution characteristics of sWGS data, ensuring high sensitivity. Next, we incorporate a CNV relationship network that integrates and learns CNPs from the population. Using a graph convolutional network model, PGcnv effectively differentiates between noise and true copy number variations. Additionally, it supports incremental learning, allowing the model to improve as more data is incorporated. We tested PGcnv on simulated datasets and 561 real-world samples from four major regions of China, and compared its performance with six other tools. The results demonstrate that PGcnv outperforms current popular tools. Overall, offering a novel perspective for population-based CNV detection. 
+Shallow whole-genome sequencing (sWGS) for inferring copy number variations (CNVs) in the human genome has rapidly become a routine practice at many research centers. Although several tools are available for inferring CNVs from sWGS data, the precision of these methods is often limited due to noise from low coverage and the impact of copy number polymorphisms (CNPs), which makes them insufficient for large-scale variant detection in clinical practice.In this study, we developed PGcnv, a tool that includes a CNV caller (ZIP-Caller) based on a zero-inflated Poisson distribution and a corrector based on a pangenome graph with bubbles. First, we develop a detection method specifically designed to account for the depth distribution characteristics of sWGS data, ensuring high sensitivity. Next, we incorporate a CNV relationship network that integrates and learns CNPs from the population. Using a graph convolutional network model, PGcnv effectively differentiates between noise and true copy number variations. Additionally, it supports incremental learning, allowing the model to improve as more data is incorporated. We tested PGcnv on simulated datasets and 561 real-world samples from four major regions of China, and compared its performance with six other tools. The results demonstrate that PGcnv outperforms current popular tools. Overall, offering a novel perspective for population-based CNV detection. 
 
 
 ## Installation
@@ -30,7 +30,7 @@ numpy 2.2.3
 scipy 1.15.2
 ```
 
-Before starting the project, you need to configure the parameter file. For detailed instructions, refer to **data/parameter_cfg.config**.
+Before starting the project, you need to configure the parameter file. For detailed instructions, refer to **my.config**.
 
 
 ## Step 1: Data Preprocessing
@@ -46,7 +46,7 @@ commands:
 
 Example:
 ```bash
-python3 data_processing.py -config data/parameter.config
+python3 data_processing.py -config my.config
 ```
 Note: Setting the baseline requires at least 50 normal samples; otherwise, a warning will be issued.
 
@@ -66,7 +66,7 @@ commands:
 
 Example:
 ```bash
-python3 zip_caller.py -config parameter.config -o data/zipcall_output.tsv -w 1000 -k 0.3
+python3 zip_caller.py -config my.config -o data/zipcall-output -w 3000 -k 0.3
 ```
 
 ## Step 3: Generate Bubbles, Phylogenetic Tree, and CNV Relationship Network
@@ -81,12 +81,12 @@ commands:
 -cnv [str]: Path to the CNV list in CSV format. 
 -o [str]: Path to the output .npz file (default: bub_results.npz).
 ```
-The CSV list file  should be converted from the VCF file of CNV samples in the training dataset. See [example/cnv_list.csv] for details. The CSV should include the following columns: 
+The CSV list file  should be converted from the VCF file of CNV samples in the training dataset. See [input_csv/cnv_list.csv] for details. The CSV should include the following columns: 
 [file_name, chr_name, start_pos, end_pos, logr]
 
 Example:
 ```bash
-python3 gen_bubbles.py -config data/parameter.config -cnv data/cnv_list.csv -o data/bub_results.npz
+python3 gen_bubbles.py -config my.config -cnv input_csv/cnv_list.csv -o bub_results.npz
 ```
 Then, use tree2graph.py to convert the .nwk file to a .gpickle file.
 
@@ -103,7 +103,7 @@ commands:
 ```
 Example:
 ```bash
-python3 tree2graph.py -nwk mynwk.nwk -npz data/bub_results.npz -cnv /data/home/std_13/000_pgcnv/data/zipcall-output/zipcaller_res_2025-04-01_16-25-47.cnv -o graph.gpickle
+python3 tree2graph.py -nwk mynwk.nwk -npz bub_results.npz -cnv data/zipcall-output/zipcaller_res_2025-04-01_16-25-47.cnv -o graph.gpickle
 ```
 ## Step 4: CNV calling based on graph convolutional network
 Use PGcnv.py to obtain the final detection results.
@@ -120,7 +120,7 @@ commands:
 ```
 Example:
 ```bash
-python3 pgcnv.py -config data/parameter.config -k  /data/home/std_13/000_pgcnv/graph.gpickle -o data/pgcnv_output
+python3 pgcnv.py -config my.config -k graph.gpickle -o data/pgcnv_output
 ```
 
 
