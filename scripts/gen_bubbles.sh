@@ -6,8 +6,8 @@
 #SBATCH --partition=normal1         # Job partition
 #SBATCH --error=%j.err               # Standard error will go to jobID.err
 
-# ÔËĞĞ Python ½Å±¾
-python3 gen_bubbles.py -config my.config -cnv input_csv/cnv_list.csv -o data/bub_results.npz
+# Ã”Ã‹ÃÃ Python Â½Ã…Â±Â¾
+python3 gen_bubbles.py -config my.config -cnv input_csv/cnv_list.csv -o bub_results.npz
 
 
 
