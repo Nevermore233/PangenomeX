@@ -30,7 +30,7 @@ numpy 2.2.3
 scipy 1.15.2
 ```
 
-Before starting the project, you need to configure the parameter file. For detailed instructions, refer to **my.config**.
+Before starting the project, you need to configure the parameter file. For detailed instructions, refer to **my.config**. 
 
 
 ## Step 1: Data Preprocessing
@@ -48,10 +48,12 @@ Example:
 ```bash
 python3 data_processing.py -config my.config
 ```
+This step will also output ' rj_means_and_n.json' in the current folder for incremental updates.
+
 Note: Setting the baseline requires at least 50 normal samples; otherwise, a warning will be issued.
 
 ## Step 2: CNV Pre-detection with CUSUM Control Chart (ZIP-Caller)
-ZIP-CALLER employs a CUSUM control chart-based model for CNV pre-detection.
+ZIP-Caller employs a CUSUM control chart-based model for CNV pre-detection.
 
 **Usage**
 ```bash
@@ -60,7 +62,7 @@ python3 zip-caller.py [-config CONFIG] [-o OUTPUT] [-w SLIDING_WINDOW_SIZE] [-k 
 commands:
 -config [str]: Path to the configuration file.
 -o [str]: Path to the output file.
--w [int]: Sliding window size (default: 1000).
+-w [int]: Sliding window size (default: 3000).
 -k [float]: Reference value for the allowed degree of deviation (default: 0.3).
 ```
 
@@ -78,7 +80,7 @@ python3 gen_bubbles.py [-config CONFIG] [-cnv CSV] [-o NPZ]
 
 commands:
 -config [str]: Path to the configuration file.
--cnv [str]: Path to the CNV list in CSV format. 
+-clist [str]: Path to the CNV list in CSV format. 
 -o [str]: Path to the output .npz file (default: bub_results.npz).
 ```
 The CSV list file  should be converted from the VCF file of CNV samples in the training dataset. See [input_csv/cnv_list.csv] for details. The CSV should include the following columns: 
@@ -86,7 +88,7 @@ The CSV list file  should be converted from the VCF file of CNV samples in the t
 
 Example:
 ```bash
-python3 gen_bubbles.py -config my.config -cnv input_csv/cnv_list.csv -o bub_results.npz
+python3 gen_bubbles.py -config my.config -clist input_csv/cnv_list.csv -o bub_results.npz
 ```
 Then, use tree2graph.py to convert the .nwk file to a .gpickle file.
 
@@ -99,12 +101,15 @@ commands:
 -npz [str]:Path to the bubble_result.npz file(the output of gen_bubbles.py).
 -cnv [str] Path to the .cnv file(the output of zip_caller).
 -o [str]: Path to the output(.gpickle) file, example: graph.gpickle
+-update [store_true]: When this parameter appears in the command line, it indicates that the tree2graph.py will use the updated files as input (see Incremental Update Module).
 
 ```
 Example:
 ```bash
 python3 tree2graph.py -nwk mynwk.nwk -npz bub_results.npz -cnv data/zipcall-output/zipcaller_res_2025-04-01_16-25-47.cnv -o graph.gpickle
 ```
+This step will also output 'df_edge.csv ' in the current folder for incremental updates. 
+
 ## Step 4: CNV calling based on graph convolutional network
 Use PGcnv.py to obtain the final detection results.
 
@@ -124,7 +129,7 @@ python3 pgcnv.py -config my.config -k graph.gpickle -o data/pgcnv_output
 ```
 
 ## Incremental Update Module
-This module achieves incremental learning by updating the normalization file and the CNV relationship network.Use 'Incremental_update.py' to obtain the updated files.
+This module achieves incremental learning by updating the normalization file and the CNV relationship network.Use 'incremental_update.py' to obtain the updated files.
 
 ```bash
 python3 Incremental_update.py [-config CONFIG] [-i CSV] [-rj JSON] [-bub NPZ] [-edge CSV]
@@ -141,10 +146,10 @@ File bub_results.npz is the output file from gen_bubbles.py.
 
 Example:
 ```bash
-python3 Incremental_update.py -config my.config -rj rj_means_and_n.json -bub data/bub_results.npz -edge df_edge.csv
+python3 incremental_update.py -config my.config -rj rj_means_and_n.json -bub data/bub_results.npz -edge df_edge.csv
 ```
 
-The Incremental_update.py file will output the updated normalization files for the new samples in the 'data/nor/' directory under the current folder. Additionally, it will generate 'updated_rj_means_and_n.json', 'new_bub_results.npz', and 'new_df_edge.csv' in the current folder. These three files can be used for the next incremental update.
+The incremental_update.py file will output the updated normalization files for the new samples in the 'data/nor/' directory under the current folder. Additionally, it will generate 'updated_rj_means_and_n.json', 'new_bub_results.npz', and 'new_df_edge.csv' in the current folder. These three files can be used for the next incremental update.
 
 After obtaining these files, you can use the -update flag in tree2graph to generate the new [.gpickle] file.
 
@@ -154,6 +159,3 @@ python3 tree2graph.py -nwk mynwk.nwk -npz bub_results.npz -cnv data/zipcall-outp
 ```
 
 At this point, the program will use the updated files to proceed with this step and then proceed with the steps outlined earlier.
-
-
-
