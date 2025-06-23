@@ -1,7 +1,7 @@
-# PGcnv: Pangenome-based Incremental Learning Framework for Shallow Copy Number Variation Detection
+# PangenomeX: a graph convolutional network-based pangenome framework for unbiased population-scale genomic variation analysis
 
 ## Abstract
-Shallow whole-genome sequencing (sWGS) for inferring copy number variations (CNVs) in the human genome has rapidly become a routine practice at many research centers. Although several tools are available for inferring CNVs from sWGS data, the precision of these methods is often limited due to noise from low coverage and the impact of copy number polymorphisms (CNPs), which makes them insufficient for large-scale variant detection in clinical practice.In this study, we developed PGcnv, a tool that includes a CNV caller (ZIP-Caller) based on a zero-inflated Poisson distribution and a corrector based on a pangenome graph with bubbles. First, we develop a detection method specifically designed to account for the depth distribution characteristics of sWGS data, ensuring high sensitivity. Next, we incorporate a CNV relationship network that integrates and learns CNPs from the population. Using a graph convolutional network model, PGcnv effectively differentiates between noise and true copy number variations. Additionally, it supports incremental learning, allowing the model to improve as more data is incorporated. We tested PGcnv on simulated datasets and 561 real-world samples from four major regions of China, and compared its performance with six other tools. The results demonstrate that PGcnv outperforms current popular tools. Overall, offering a novel perspective for population-based CNV detection. 
+In population-scale genomic variation studies based on shallow whole genome sequencing (sWGS), pangenomes have become a powerful and effective auxiliary tool. They excel at identifying population-specific single nucleotide polymorphisms (SNPs) and insertions/deletions (indels) while mitigating the limitations imposed by shallow read depth. Extending these advantages to copy number variation (CNV), however, remains challenging because two key issues are still unresolved. First, current pangenome frameworks exhibit pronounced population-representation bias arising from uneven sampling across populations. As a result, the graphs primarily capture variants from majority groups while dampening signals from minority groups. Although this bias has limited impact on detecting SNPs and indels, because their accurate identification can often be achieved without explicit population context when sequencing depth is sufficient, it severely compromises CNV detection accuracy, especially under shallow-coverage conditions. Second, in population-scale genomic variation analyses, common but benign population-specific copy number polymorphisms (CNPs) frequently obscure pathogenic CNVs. Existing pangenome frameworks lack dedicated mechanisms for representing CNPs and CNVs, limiting their ability to distinguish pathogenic CNVs from benign, population-specific CNPs. In this study, we present PangenomeX, a graph-convolutional pangenome framework tailored to low-coverage, population-scale CNV analysis. To address the challenge of representing CNPs, we embed known CNPs as prior knowledge into the pangenome graph and construct a CNV relationship network guided by a phylogenetic tree. We then employ a graph convolutional network to learn the interactions between CNV and CNP nodes. To counter population-representation bias, the GCN restricts aggregation to one- and two-hop neighborhoods each node, preserving essential local population context while preventing signals from majority groups from dominating those of minority populations. Evaluation on simulated cohorts and 561 real samples shows that PangenomeX distinguishes pathogenic CNVs from common population CNPs markedly better than existing methods. Overall, PangenomeX offers a methodological blueprint for large-cohort variant screening and provides a practical path for bringing graph-based genomics into clinical practice.
 
 
 ## Installation
@@ -9,7 +9,7 @@ Uncompress the installation package using the following commands:
 
 ```bash
 cd /my/install/dir/
-unzip /path/to/PGcnv.zip
+unzip /path/to/PangenomeX.zip
 ```
 
 **Requirements**
@@ -34,7 +34,7 @@ Before starting the project, you need to configure the parameter file. For detai
 
 
 ## Step 1: Data Preprocessing
-Both ZIP-Caller and PGcnv require [data preprocessing] before analysis. The preprocessing consists of two steps: 1.data normalization and 2.baseline setting.
+Both ZIPcnv and PangenomeX require [data preprocessing] before analysis. The preprocessing consists of two steps: 1.data normalization and 2.baseline setting.
 
 **Usage**
 ```bash
