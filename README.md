@@ -1,5 +1,7 @@
 # PangenomeX: a graph convolutional network-based pangenome framework for unbiased population-scale genomic variation analysis
 
+![Figure 1](https://github.com/Nevermore233/PangenomeX/raw/main/Figures/Figure1.png)
+
 ## Abstract
 In population-scale genomic variation studies based on shallow whole genome sequencing (sWGS), pangenomes have become a powerful and effective auxiliary tool. They excel at identifying population-specific single nucleotide polymorphisms (SNPs) and insertions/deletions (indels) while mitigating the limitations imposed by shallow read depth. Extending these advantages to copy number variation (CNV), however, remains challenging because two key issues are still unresolved. First, current pangenome frameworks exhibit pronounced population-representation bias arising from uneven sampling across populations. As a result, the graphs primarily capture variants from majority groups while dampening signals from minority groups. Although this bias has limited impact on detecting SNPs and indels, because their accurate identification can often be achieved without explicit population context when sequencing depth is sufficient, it severely compromises CNV detection accuracy, especially under shallow-coverage conditions. Second, in population-scale genomic variation analyses, common but benign population-specific copy number polymorphisms (CNPs) frequently obscure pathogenic CNVs. Existing pangenome frameworks lack dedicated mechanisms for representing CNPs and CNVs, limiting their ability to distinguish pathogenic CNVs from benign, population-specific CNPs. In this study, we present PangenomeX, a graph-convolutional pangenome framework tailored to low-coverage, population-scale CNV analysis. To address the challenge of representing CNPs, we embed known CNPs as prior knowledge into the pangenome graph and construct a CNV relationship network guided by a phylogenetic tree. We then employ a graph convolutional network to learn the interactions between CNV and CNP nodes. To counter population-representation bias, the GCN restricts aggregation to one- and two-hop neighborhoods each node, preserving essential local population context while preventing signals from majority groups from dominating those of minority populations. Evaluation on simulated cohorts and 561 real samples shows that PangenomeX distinguishes pathogenic CNVs from common population CNPs markedly better than existing methods. Overall, PangenomeX offers a methodological blueprint for large-cohort variant screening and provides a practical path for bringing graph-based genomics into clinical practice.
 
@@ -109,6 +111,8 @@ Example:
 python3 tree2graph.py -nwk mynwk.nwk -npz bub_results.npz -cnv data/zipcall-output/zipcaller_res_2025-04-01_16-25-47.cnv -o graph.gpickle
 ```
 This step will also output 'df_edge.csv ' in the current folder for incremental updates. 
+
+![Figure 3](https://github.com/Nevermore233/PangenomeX/raw/main/Figures/Figure3.png)
 
 ## Step 4: CNV calling based on graph convolutional network
 Use PGcnv.py to obtain the final detection results.
